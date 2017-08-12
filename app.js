@@ -16,8 +16,10 @@ const Movie = require('./app/api/movie')
 var views = require('koa-views');
 
 // Must be used before any router is used
-
-const dbUrl = 'mongodb://127.0.0.1:27017/movie';
+var mode = process.env.NODE_ENV || 'development';
+console.log(mode)
+const dbUrl = mode === 'development'? "mongodb://127.0.0.1:27017/movie" : 'mongodb://movie_rw:13370761096@127.0.0.1:27017/movie';
+console.log(dbUrl)
 mongoose.connect(dbUrl);
 
 mongoose.Promise = global.Promise;
