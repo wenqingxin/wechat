@@ -10,7 +10,7 @@ const config = {
         appID:'wx4be8ebbc8c255500',//测试账号
         appSecret:'b03ac1acbed0d7e5550854eaf9835245',//测试账号
         token:'Iamareallyskinnyboy',
-        myService:'http://bde2a701.ngrok.io',
+        myService:'http://112.74.182.219:1234',
         getAccessToken:function () {
             return util.readFileAsync(wechat_file)
         },
