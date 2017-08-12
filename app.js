@@ -25,6 +25,9 @@ mongoose.connect(dbUrl);
 mongoose.Promise = global.Promise;
 const app = new Koa();
 app.use(views(__dirname + '/app/views/wx', { extension: ['pug'] }))
+router.get('/', async (ctx,next) =>{
+    ctx.body = '请调用API'
+})
 router.get('/movie', game);
 router.get('/wx', wechat(config.wechat,weixin.reply));
 router.post('/wx', wechat(config.wechat,weixin.reply));
