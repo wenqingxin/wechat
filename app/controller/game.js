@@ -1,7 +1,7 @@
 /**
  * Created by Administrator on 2017/8/2 0002.
  */
-const Wechat =require('../../WECHAT/wechat.js')
+const Wechat =require('../../wechat/wechat.js')
 const crypto =require('crypto')
 const config = require('../../config')
 const weChatApi = new Wechat(config.wechat)

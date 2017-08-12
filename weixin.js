@@ -2,7 +2,7 @@
  * Created by Administrator on 2017/7/23 0023.
  */
 const config = require('./config')
-const Wechat = require('./WECHAT/wechat')
+const Wechat = require('./wechat/wechat')
 const movie = require('./app/api/movie')
 const Catetory = require('./app/model/catetory')
 const Movie = require('./app/model/movie')
