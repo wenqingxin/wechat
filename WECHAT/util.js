@@ -49,7 +49,7 @@ exports.tpl = function (content,message) {
         type = 'news';
     }
 
-    type = content.type || type;
+    type = content && (content.type || type);
     info.content =content;
     info.createTime = (new Date()).getTime();
     info.msgType = type;

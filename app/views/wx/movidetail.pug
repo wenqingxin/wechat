@@ -1,0 +1,36 @@
+doctype html
+html
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport",content="width=device-width,initial-scale=1,user-scalable=0")
+        title 电影详情
+        link(rel="stylesheet",href="http://res.wx.qq.com/open/libs/weui/1.1.2/weui.min.css")
+    body
+        .weui-cells-title
+            h1(style='margin-left:15px')= title
+        .weui-cells
+            if catetory
+                .weui-cell
+                    .weui-cell_bd
+                        p= catetory.name
+            //.weui-cell
+                .weui-cell_bd
+                    p= doubanId
+            .weui-cell
+                .weui-cell_bd
+                    p= director
+            //.weui-cell
+                .weui-cell_bd
+                    p= language
+            .weui-cell
+                .weui-cell_bd
+                    p= country
+            .weui-cell
+                .weui-cell_bd
+                    img(src= poster,alt= title)
+            .weui-cell
+                .weui-cell_bd
+                    p= year
+            .weui-cell
+                .weui-cell_bd
+                    p= summary
