@@ -18,6 +18,11 @@ module.exports = {
                     "url":config.wechat.myService+"/movie"
                 },
                 {
+                    "type":"view",
+                    "name":"管理后台",
+                    "url":config.wechat.myService+":8081"
+                },
+                {
                     "type":"location_select",
                     "name":"地理位置",
                     "key":"V1001_GOOD"
