@@ -8,6 +8,7 @@ const Catetory = require('./app/model/catetory')
 const Movie = require('./app/model/movie')
 const path = require('path')
 const request = require('request')
+const {getMovieList,saveMoviedetail} = require('./app/api/douban');
 var weChatApi = new Wechat(config.wechat)
 weChatApi.createMenu();
 exports.reply = async function(ctx,next) {
@@ -28,25 +29,57 @@ exports.reply = async function(ctx,next) {
         }else if(message.Event === 'unsubscribe'){
             console.log('无情取关');
         }else if(message.Event === 'LOCATION'){
-            ctx.body = '您上报的位置是'+message.Latitude+'/'+message.Longitude+'-'+message.precision;
+            //ctx.body = '您上报的位置是'+message.Latitude+'/'+message.Longitude+'-'+message.precision;
         }else if(message.Event === 'CLICK'){
             //ctx.body = '您点击了菜单： '+message.EventKey;
+            if(message.EventKey == 'HELP'){
+                ctx.body = info;
+                return;
+            }
+            let reply;
             if(message.EventKey == 'TODAY_MOViE'){
                 let res = await movie.findHotMovies();
                 console.log('电影搜索结果',res)
                 if(res && res.length!=0){
-                    let reply = res.map(function (item) {
+                    reply = res.map(function (item) {
                         return {
                             title:item.title,
-                            description:item.summary,
                             picUrl:item.poster,
+                            description:item.summary,
                             url:config.wechat.myService+'/wx/MovieDetail?q='+item.doubanId
                         }
                     })
-                    ctx.body = reply
+                    ctx.body = reply;
+                    return;
                 }
-            }else if(message.EventKey == 'HELP'){
-                ctx.body = info;
+            }
+            else if(message.EventKey == 'HOT_MOViE'){
+                reply = await getMovieList('in_theaters');
+                console.log('HOT_MOViE',JSON.stringify(reply))
+            }
+            else if(message.EventKey == 'COMING_MOViE'){
+                reply = await getMovieList('coming_soon');
+                console.log('COMING_MOViE',JSON.stringify(reply))
+            }
+            else if(message.EventKey == 'NICE_MOViE'){
+                reply = await getMovieList('weekly');
+                console.log('NICE_MOViE',JSON.stringify(reply))
+            }
+            else if(message.EventKey == 'NEW_MOViE'){
+                reply = await getMovieList('new_movies');
+                console.log('NEW_MOViE',JSON.stringify(reply))
+            }
+            if(reply && reply.body &&reply.body.subjects){
+                ctx.body  = reply.body.subjects.splice(0,5).map(function (item) {
+                    return {
+                        title:item.title,
+                        description:item.original_title || item.summary,
+                        picUrl:item.images.large || item.poster,
+                        url:config.wechat.myService+'/wx/MovieDetail?q='+item.id
+                    }
+                })
+            }else{
+                ctx.body = 'sorry,没找到相关电影.'
             }
         }else if(message.Event === 'SCAN'){
             ctx.body = '关注后扫二维码： '+message.EventKey+' '+message.Ticket;
@@ -72,26 +105,25 @@ exports.reply = async function(ctx,next) {
             content = message.Recognition;
         }else{
             content = message.Content
-
         }
 
         let reply = '恩，然后呢？';
         if(content === '1'){
-            reply = 'hehe1';
+            reply = '1就是1';
         }
         else if(content === '2'){
-            reply = 'hehe2';
+            reply = '2就是2';
         }
         else if(content === '3'){
-            reply = 'hehe3';
+            reply = '3就是3';
         }else if(content === '4'){
             reply = [{
-                title:'test',
+                title:'新闻',
                 description:'description',
                 picUrl:'http://inews.gtimg.com/newsapp_bt/0/1829875560/641',
                 url:'http://news.qq.com/a/20170722/036434.htm?pgv_ref=aio2015_qqbrowsertab'
             },{
-                title:'test2',
+                title:'资讯',
                     description:'description',
                     picUrl:'http://inews.gtimg.com/newsapp_bt/0/1829875560/641',
                     url:'http://news.qq.com/a/20170722/036434.htm?pgv_ref=aio2015_qqbrowsertab'
@@ -116,59 +148,7 @@ exports.reply = async function(ctx,next) {
                             body.subjects.forEach(async function (item) {
                                 let res = await movie.findMovieByDoubanId(item.id);
                                 if(!res ||res.length == 0){
-                                    request({url:'https://api.douban.com/v2/movie/subject/'+item.id,method:'GET',json:true},function (error, response, body) {
-                                        console.log('远程电影详情',body)
-                                        let _movie = new Movie({
-                                            doubanId:body.id,
-                                            director:body.directors[0] && body.directors[0].name,
-                                            title:body.title,
-                                            language:body.countries[0],
-                                            country:body.countries[0],
-                                            flash:body.images.large,
-                                            poster:body.images.large,
-                                            year:body.year,
-                                            summary:body.summary,
-                                        })
-                                        Catetory.findOne({name:item.genres[0]},function (err,catetory) {
-                                            if(catetory){
-                                                _movie.catetory = catetory._id;
-                                                _movie.save(function (err,movie) {
-                                                    if(err) console.log(err);
-                                                    if(!catetory.movies){
-                                                        catetory.movies=[];
-                                                    }
-                                                    let hasCat = catetory.movies.find(function (item) {
-                                                        return item.doubanId == _movie.doubanId;
-                                                    });
-                                                    if(!hasCat){
-                                                        catetory.movies.push(movie._id);
-                                                        catetory.save(function (err,catetory) {
-                                                            if(err) console.log(err)
-                                                        });
-                                                    }
-
-                                                    //res.redirect('/admin/movie/list/')
-                                                })
-                                            }else{
-                                                let _catetory = new Catetory({
-                                                    name:item.genres[0]
-                                                });
-                                                _catetory.save(function (err,catetory) {
-                                                    if(err) console.log(err);
-                                                    _movie.catetory = catetory._id;
-                                                    _movie.save(function (err,movie) {
-                                                        if(err) console.log(err);
-                                                        catetory.movies.push(movie._id);
-                                                        catetory.save(function (err,catetory) {
-                                                            if(err) console.log(err)
-                                                        });
-                                                        //res.redirect('/admin/movie/list/')
-                                                    })
-                                                })
-                                            }
-                                        })
-
-                                    })
+                                    saveMoviedetail(item.id,item.genres[0]);
                                 }else{
                                     ctx.body = '未找到该电影'
                                 }

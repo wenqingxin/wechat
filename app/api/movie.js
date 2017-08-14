@@ -5,7 +5,19 @@ var mongoose = require('mongoose');
 var movieSchema = require('../schema/movie');
 var movie = mongoose.model('Movie',movieSchema);
 async function searchMovie(q) {
-    return await movie.find({title:new RegExp(q+'.*','i')}).exec()
+    let resArr = await movie.find({title:new RegExp(q+'.*','i')}).exec()
+    if(resArr && resArr.length != 0 ){
+        resArr[0].pv = resArr[0].pv + 1;
+        resArr[0].save(function (err,_movie){
+            if(err){
+                console.log(err)
+            } else {
+                console.log('搜索电影'+movie.title+' pv:'+_movie.pv)
+            }
+
+        });
+    }
+    return resArr;
 }
 async function findMovieByDoubanId(q) {
     return await movie.findOne({doubanId:q}).populate({

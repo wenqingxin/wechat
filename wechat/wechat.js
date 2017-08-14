@@ -500,7 +500,7 @@ WeChat.prototype.createMenu = function () {
     let form = menuconfig;
     return new Promise( (resolve,reject)=> {
         this.fetchAccessToken().then(function (data) {
-            console.log('创建菜单获取token')
+            console.log('创建菜单获取token',data)
             let url = api.menu.create+'?access_token='+data.access_token;
             request({method:'POST',url,body:form,json:true}, function (error, response, body) {
                 if(body){

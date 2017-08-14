@@ -5,9 +5,24 @@ const config = require('./config')
 module.exports = {
     "button":[
         {
-            "type":"click",
-            "name":"今日推荐",
-            "key":"TODAY_MOViE"
+            "name":"排行榜",
+            "sub_button":[
+                {
+                    "type":"click",
+                    "name":"正在热映",
+                    "key":"HOT_MOViE",
+                },
+                {
+                    "type":"click",
+                    "name":"即将上映",
+                    "key":"COMING_MOViE",
+                },
+                {
+                    "type":"click",
+                    "name":"今日推荐",
+                    "key":"TODAY_MOViE"
+                },
+            ]
         },
         {
             "name":"电影",
@@ -22,12 +37,11 @@ module.exports = {
                     "name":"管理后台",
                     "url":config.wechat.myService+":8081"
                 },
-                {
+/*                {
                     "type":"location_select",
                     "name":"地理位置",
                     "key":"V1001_GOOD"
-                },
-
+                },*/
                 ]
         },{
             "type":"click",

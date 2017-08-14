@@ -24,6 +24,7 @@ mongoose.connect(dbUrl);
 
 mongoose.Promise = global.Promise;
 const app = new Koa();
+const {saveMoviedetail} = require('./app/api/douban')
 app.use(views(__dirname + '/app/views/wx', { extension: ['pug'] }))
 router.get('/', async (ctx,next) =>{
     ctx.body = '请调用API'
@@ -35,11 +36,14 @@ router.get('/wx/MovieDetail', async (ctx,next) =>{
     if(ctx.query.q && ctx.query.q!="undefined"){
         let res = await Movie.findMovieByDoubanId(ctx.query.q);
         if(!res){
+            res = await saveMoviedetail(ctx.query.q);
+        }
+        if(!res){
             ctx.body = '未查询到该电影'
-        }else{
-            await ctx.render('movidetail',res);
+        }else {
             res.pv=res.pv+1;
             res.save();
+            await ctx.render('movidetail',res);
         }
     }else{
         ctx.body = '未查询到该电影'
