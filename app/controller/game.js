@@ -26,9 +26,15 @@ module.exports = async function (ctx,next) {
                     <meta name="viewport" content="user-scalable=no, initial-scale=1,maximum-scale=1,minimum-scale=1,width=device-width"/>
                     <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js" type="text/javascript"></script>
                     <script src="http://zeptojs.com/zepto.min.js"></script>
+                    <link rel="stylesheet" href="http://res.wx.qq.com/open/libs/weui/1.1.2/weui.min.css"></link>
+                    <style>
+                        #audioSearch {
+                            margin: 4px;
+                        }
+                    </style>
                 </head>
                 <body>
-                    <h1 id='audioSearch'>点击语音搜索</h1>
+                    <h1 id='audioSearch' class="weui-btn weui-btn_plain-primary">点击语音搜索</h1>
                     <div id='resContent'>
                         <div id="inputTitle"></div>
                         <div id="inputDirector"></div>
