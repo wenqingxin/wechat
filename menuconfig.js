@@ -34,7 +34,7 @@ module.exports = {
                 },
                 {
                     "type":"view",
-                    "name":"管理后台",
+                    "name":"电影存货",
                     "url":config.wechat.myService+":8081"
                 },
 /*                {
