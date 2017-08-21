@@ -61,7 +61,7 @@ function saveMoviedetail(id,cat) {
                     })
                 }else{
                     let _catetory = new Catetory({
-                        name:_movie.genres[0]
+                        name:body.genres[0]
                     });
                     _catetory.save(function (err,catetory) {
                         if(err) console.log(err);
