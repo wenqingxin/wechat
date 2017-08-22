@@ -35,7 +35,7 @@ module.exports = {
                 {
                     "type":"view",
                     "name":"电影存货",
-                    "url":config.wechat.myService+":8081"
+                    "url":'http://movie.wenqingxin.com/'
                 },
 /*                {
                     "type":"location_select",
